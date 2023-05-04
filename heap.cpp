@@ -53,7 +53,7 @@ void heapSort(int arr[], int n)
     }
 }
   
-/* print contents of array */
+//print contents of array
 void displayArray(int arr[], int n)
 {
    for (int i=0; i<n; ++i)
