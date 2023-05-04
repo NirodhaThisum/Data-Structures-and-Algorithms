@@ -85,8 +85,6 @@ int main()
    }
 
 
-  // int heap_arr[] = {4,17,3,12,9,6};
-
    cout<<"Input array"<<endl;
    displayArray(heap_arr,n);
   
