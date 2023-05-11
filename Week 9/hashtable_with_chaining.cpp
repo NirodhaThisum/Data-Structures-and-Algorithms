@@ -1,23 +1,16 @@
-#include <cstring>
-#include <string>
 #include <iostream>
+#include "linkedlist.cpp"
 using namespace std;
-
 
 struct HashTable{
     int MAX_LENGTH = 4;
-    string * password = new string[MAX_LENGTH];
-
-    void intialize_hashtable(){
-        for (int i = 0; i < 4; i++){
-            password[i].clear();
-        }
-    }
+    int MAX_CHAIN_LENGTH = 2;
+    LinkedList * password = new LinkedList[MAX_LENGTH];
     bool isFull(){
         bool full = true;
         int count = 0;
         for (int i = 0; i < MAX_LENGTH; i++){
-            if(password[i].empty()){
+            if(password[i].head == NULL){
                 full = false;
             }
         }
@@ -26,16 +19,22 @@ struct HashTable{
     int hashfunc(string user_name){
         int sum = 0;
         int hash = 0;
-	//add your code below
-        for(int i = 0; i < user_name.length(); i++){
+        for(int i = 0;i< user_name.length(); i++){
             sum += int(user_name[i]);
+
         }
         hash = sum % MAX_LENGTH;
 
         return hash;
     }
     bool is_slot_empty(int hash){
-        bool empty = password[hash].empty();
+        bool empty;
+        if(password[hash].head==NULL){
+            empty = true;
+        }
+        else{
+            empty=false;
+        }
         return empty;
     }
     void insert(string user_name,string user_password){
@@ -43,59 +42,38 @@ struct HashTable{
         bool empty;
         hash = hashfunc(user_name);
         empty = is_slot_empty(hash);
-	//add an if condition to complete the code here
-        
-        if (empty){
-            password[hash] = user_password;
-        }
+        if(password[hash].length<MAX_CHAIN_LENGTH){
+            password[hash].insert(user_name.data(),user_password.data());
 
+        }
         else{
-            cout<<"User already exists\n";
+            cout<<"Linked List reached MAX CAP!\n";
         }
-
+    }
+    void print_hashtable(){
+        for(int i=0;i<MAX_LENGTH;i++){
+            cout<<"["<<i<<"]-->";
+            password[i].print_list();
+        }
     }
     void hash_lookup(string user_name){
         int hash;
         bool empty;
         hash = hashfunc(user_name);
         empty = is_slot_empty(hash);
-	//add an if condition to complete the code here
-        if (empty){
-            cout<<"No item found\n";
+	//add your code below
+        if(empty) {
+            cout << "There is no user" << endl;
         }
-        else{
-            cout<<"Password is: "<<password[hash]<<"\n";
-        }
-
+        else {
+            password[hash].search(user_name );        }
 	
     }
-    void delete_item(string user_name){
-        int hash;
-        bool empty;
-        hash = hashfunc(user_name);
-        empty = is_slot_empty(hash);
-        if(empty){
-            cout<<"No item found\n";
-        }
-        else{
-            password[hash].clear();
-            cout<<"User deleted\n";
-        }
-
-    }
-    void print_hashtable(){
-        for(int i=0;i<MAX_LENGTH;i++){
-            cout<<"["<<i<<"]-->"<<password[i]<<"\n";
-        }
-    }
-
 };
 
 int main(){
     HashTable * hashtbl = new HashTable;
-    hashtbl->intialize_hashtable();
     cout<< hashtbl->isFull()<<"\n";
-
     int command=0;
     string user_name;
     string password;
@@ -113,27 +91,21 @@ int main(){
             hashtbl->insert(user_name,password);
             break;
         case 2:
-            /* delete item */
-            cout << "Enter item to be deleted: ";
-            cin >> user_name;
-            hashtbl->delete_item(user_name);
-            break;
-        case 3:
             /* hash lookup password*/
             cout << "Enter user name to look up password:";
             cin >> user_name;
             hashtbl->hash_lookup(user_name);
             break;
-        case 4:
+        case 3:
             hashtbl->print_hashtable();
             break;
         case -1:
             /* hash lookup password*/
+            hashtbl->print_hashtable();
             cout << "Exiting...\n";
             break;
         
         }
-
     
     }
     return 0;
